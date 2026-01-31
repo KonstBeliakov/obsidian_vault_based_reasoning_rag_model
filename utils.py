@@ -4,7 +4,6 @@ import sys
 
 
 FILE_SEP_TOKEN = '\n[[SEP_TOKEN]]\n'
-SEP_TOKENS = [FILE_SEP_TOKEN, '\n---\n', '\n# ', '\n## ', '\n#### ', '\n##### ', '\n###### ', '\n\n', '\n']
 
 
 def gather_contents(input_dir: str, output_file: str) -> None:

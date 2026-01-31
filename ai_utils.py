@@ -11,13 +11,17 @@ from langgraph.graph import StateGraph, END
 from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams, Distance, PointStruct
 from tavily import TavilyClient
+from langchain_huggingface import HuggingFaceEmbeddings
+
+from sentence_transformers import SentenceTransformer
+from sentence_transformers.util import cos_sim
 
 
 load_dotenv(dotenv_path='./data.env') # loading environment variables form data.env
 
 QDRANT_COLLECTION = "districts_rag"
 LLM_MODEL = "gpt-4o-mini"
-EMBEDDING_MODEL = "text-embedding-3-small"
+# EMBEDDING_MODEL = "text-embedding-ada-002" #"text-embedding-3-small"
 
 
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -33,10 +37,19 @@ llm = ChatOpenAI(
     api_key=openai_api_key,
 )
 
-embeddings = OpenAIEmbeddings(
-    model=EMBEDDING_MODEL,
-    api_key=openai_api_key,
-)
+# Does not work for some reason
+# embeddings = OpenAIEmbeddings(
+#     model=EMBEDDING_MODEL,
+#     api_key=openai_api_key,
+# )
+
+#embeddings = HuggingFaceEmbeddings(
+#    model_name="all-MiniLM-L6-v2"
+#)
+
+
+embedding_model_name = 'intfloat/multilingual-e5-large'
+embedding_model = SentenceTransformer(embedding_model_name)
 
 tavily = TavilyClient(api_key=tavily_api_key)
 
@@ -49,3 +62,6 @@ langfuse = Langfuse(
 
 if __name__ == '__main__':
     print('openai, tavily and langfuse apis configured successfully')
+    print("Loading embedding model...")
+    test_embedding = embedding_model.encode("test")
+    print(f"Model loaded successfully! Vector size: {len(test_embedding)}")
